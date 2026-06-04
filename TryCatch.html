@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        async function getweather() {
+            try {
+                // 要嘗試取得的內容或資料
+                // 舉例要取得API資料來處理
+                const a = fetch("https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWA-CEE")
+                const b = a.json();
+            }
+            catch (error) {
+                //只要try過之後，有任何問題的都會有錯誤會從這個catch回傳出來
+                // error -> 所有資料都會呈現出來
+                // error.message -> 單獨取得報錯的內容
+                console.log(error.message);
+                // 可以透過錯誤的內容來特別制定錯誤需求
+            }
+            finally { // finally- > 可寫可不寫 看需求
+                console.log('有道這個地方嗎');
+            }
+        }
+        getweather();
+
+    </script>
+</body>
+
+</html>
