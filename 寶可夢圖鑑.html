@@ -82,15 +82,21 @@
             const allRes = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${total}&offset=0`)
             const allUrl = await allRes.json();
             console.log(allUrl);
-            pokemons = await Promise.all(allUrl.results.map(element => onePokemon(element.url)
-            ));
+            // pokemons = await Promise.all(allUrl.results.map(element => onePokemon(element.url)
+            // ));
             // 跑回圈抓取細部資料
+            // forEach-> 不支援非同步的方式處理
             // allUrl.results.forEach(element => {
             //     onePokemon(element.url);
             // });
 
+            // 替代方案使用 for
+            for (const element of allUrl.results) {
+                await onePokemon(element.url); // 等這隻抓完，才會進入下一次迴圈
+            }
+            
             console.log(pokemons);
-            showList();
+            await showList();
         }
         getpokemon(50);
 
@@ -100,14 +106,19 @@
             const oneUrl = await oneRes.json();
             // 資料處理
             // console.log(oneUrl.types.map((item) => Types[item.type.name].zh));
-            return {
+            // return {
+            //     id: oneUrl.id,
+            //     name: oneUrl.name,
+            //     img: oneUrl.sprites.back_shiny,
+            //     types: oneUrl.types.map((item) => Types[item.type.name].zh),
+            // };
+            // 3.資料更新到陣列裡面
+            pokemons.push({
                 id: oneUrl.id,
                 name: oneUrl.name,
                 img: oneUrl.sprites.back_shiny,
                 types: oneUrl.types.map((item) => Types[item.type.name].zh),
-            };
-            // 3.資料更新到陣列裡面
-            // pokemons.push(a);
+            });
             // console.log(oneUrl.id);
             // console.log(oneUrl.sprites.back_shiny);
             // console.log(oneUrl.name);
@@ -116,7 +127,6 @@
 
             // console.log(oneUrl);
         }
-
 
         // 2.把畫面與資料串起來 -> 包成方法(因為要等資料更新資後在把畫面呈現上去)
         function showList() {
