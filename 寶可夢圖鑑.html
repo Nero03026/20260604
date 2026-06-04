@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #cards {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            width: calc(100px - 20px);
+            padding: 10px;
+            text-align: center;
+            background-color: aquamarine;
+        }
+
+        .card img {
+            width: 100%;
+            height: 50px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <section id="cards">
+        <div class="card">
+            <div>#000</div>
+            <img src="" alt="">
+            <div>OOO</div>
+            <div>
+                <span>OO</span>
+                <span>OO</span>
+            </div>
+        </div>
+    </section>
+    <!-- https://pokeapi.co/ -->
+    <script>
+        // 一、站存功能 把fetch資料站存到 localStorage
+        // 二、過濾功能
+
+        const Types = {
+            "normal": { "zh": "一般", "color": "#A8A77A" },
+            "fighting": { "zh": "格鬥", "color": "#C22E28" },
+            "flying": { "zh": "飛行", "color": "#A98FF3" },
+            "poison": { "zh": "毒", "color": "#A33EA1" },
+            "ground": { "zh": "地面", "color": "#E2BF65" },
+            "rock": { "zh": "岩石", "color": "#B6A136" },
+            "bug": { "zh": "蟲", "color": "#A6B91A" },
+            "ghost": { "zh": "幽靈", "color": "#735797" },
+            "steel": { "zh": "鋼", "color": "#B7B7CE" },
+            "fire": { "zh": "火", "color": "#EE8130" },
+            "water": { "zh": "水", "color": "#6390F0" },
+            "grass": { "zh": "草", "color": "#7AC74C" },
+            "electric": { "zh": "電", "color": "#F7D02C" },
+            "psychic": { "zh": "超能力", "color": "#F95587" },
+            "ice": { "zh": "冰", "color": "#96D9D6" },
+            "dragon": { "zh": "龍", "color": "#6F35FC" },
+            "dark": { "zh": "惡", "color": "#705746" },
+            "fairy": { "zh": "妖精", "color": "#D685AD" }
+        }
+        // 抓到的資料會盡量不要直接拿來使用
+        // 先放到一個變數整理好之後再使用它
+        let pokemons = [
+            // {
+            //     id: "4564456",
+            //     name: '456456',
+            //     img: 'OOO',
+            //     types: ['213', '123'],
+            // }
+        ];
+        // 1.抓取寶可夢清單
+        async function getpokemon(total) {
+            // ※async　只有下一層可以使用 await 如果是在包一層的裡面是無法使用
+            // 會增加一個動態取的資料的功能
+            // 取得url網址列表
+            const allRes = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${total}&offset=0`)
+            const allUrl = await allRes.json();
+            console.log(allUrl);
+            pokemons = await Promise.all(allUrl.results.map(element => onePokemon(element.url)
+            ));
+            // 跑回圈抓取細部資料
+            // allUrl.results.forEach(element => {
+            //     onePokemon(element.url);
+            // });
+
+            console.log(pokemons);
+            showList();
+        }
+        getpokemon(50);
+
+        async function onePokemon(url) {
+            // 個別的資料
+            const oneRes = await fetch(url)
+            const oneUrl = await oneRes.json();
+            // 資料處理
+            // console.log(oneUrl.types.map((item) => Types[item.type.name].zh));
+            return {
+                id: oneUrl.id,
+                name: oneUrl.name,
+                img: oneUrl.sprites.back_shiny,
+                types: oneUrl.types.map((item) => Types[item.type.name].zh),
+            };
+            // 3.資料更新到陣列裡面
+            // pokemons.push(a);
+            // console.log(oneUrl.id);
+            // console.log(oneUrl.sprites.back_shiny);
+            // console.log(oneUrl.name);
+            // console.log(oneUrl.types);
+            // 把取得到的資料整理成網頁所使用的內容
+
+            // console.log(oneUrl);
+        }
+
+
+        // 2.把畫面與資料串起來 -> 包成方法(因為要等資料更新資後在把畫面呈現上去)
+        function showList() {
+            console.log(pokemons);
+            const cards = document.querySelector('#cards');
+            cards.innerHTML = '';
+            pokemons.forEach((pokemon) => {
+                console.log(pokemon);
+                cards.innerHTML += `
+                    <div class="card">
+                        <div>${pokemon.id}</div>
+                        <img src="${pokemon.img}" alt="">
+                        <div>${pokemon.name}</div>
+                        <div>
+                            ${pokemon.types.map((item) => `<span>${item}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+
+        // fetch(`https://pokeapi.co/api/v2/pokemon?limit=2000&offset=0`)
+        //     .then((res) => res.json())
+        //     .then((data) => {
+        //         console.log(data.results[0].url);
+        //         // 1.一次取的資料 (要換成跑迴圈所有的內容)
+        //         fetch(data.results[0].url)
+        //             .then((res1) => res1.json())
+        //             .then((data1) => {
+        //                 console.log(data1.id);
+        //                 console.log(data1.sprites.back_shiny);
+        //                 console.log(data1.name);
+        //                 console.log(data1.types);
+        //             })
+        //     })
+        // 2.個別抓取裡面的內容
+        // 編號 id
+        // 圖片 sprites.back_shiny
+        // 名字 name
+        // 屬性 types 跑回圈 取得 type.name
+    </script>
+</body>
+
+</html>
