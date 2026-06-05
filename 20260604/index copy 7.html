@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #cards {
+            display: flex;
+            gap: 8px;
+        }
+
+        .card {
+            transform-style: preserve-3d;
+            transition: 0.5s;
+            transform-origin: center;
+            width: 100px;
+            height: 100px;
+            position: relative;
+        }
+
+
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+
+        }
+
+        .card-front {
+            backface-visibility: hidden;
+            transform: rotateY(0deg);
+            transition: 0.5s;
+            background-color: #2196f3;
+        }
+
+        .card-back {
+            backface-visibility: hidden;
+            transform: rotateY(180deg);
+            transition: 0.5s;
+            background-color: blueviolet;
+        }
+
+        .card.active .card-front {
+            transform: rotateY(-180deg);
+        }
+
+        .card.active .card-back {
+            transform: rotateY(0deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="cards">
+        <div class="card">
+            <div class="card-front">
+                A
+            </div>
+            <div class="card-back">
+                B
+            </div>
+        </div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    <script>
+
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card) => {
+            card.addEventListener('click', () => {
+                card.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+
+</html>
