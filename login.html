@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登入 / 註冊 — 島嶼旅跡</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <style>
+    .login-page {
+      min-height: 100vh; display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    /* Left image panel */
+    .login-img {
+      position: relative; overflow: hidden;
+      background: var(--navy);
+    }
+    .login-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      opacity: .65;
+    }
+    .login-img-overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 48px;
+      background: linear-gradient(to top, rgba(27,42,74,.85) 0%, transparent 60%);
+    }
+    .login-img-quote {
+      font-family: var(--font-serif); font-size: 1.8rem; font-weight: 900;
+      color: var(--white); line-height: 1.3; margin-bottom: 12px;
+    }
+    .login-img-quote em { color: var(--coral); font-style: normal; }
+    .login-img-sub { color: rgba(255,255,255,.7); font-size: .9rem; }
+    .login-logo {
+      position: absolute; top: 32px; left: 48px;
+      font-family: var(--font-serif); font-size: 1.3rem; font-weight: 900;
+      color: var(--white);
+    }
+    .login-logo span { color: var(--coral); }
+
+    /* Right form panel */
+    .login-form-panel {
+      display: flex; align-items: center; justify-content: center;
+      padding: 60px 48px; background: var(--white);
+    }
+    .login-form-inner { width: 100%; max-width: 400px; }
+    .form-tabs {
+      display: flex; background: var(--sand);
+      border-radius: 50px; padding: 4px;
+      margin-bottom: 36px;
+    }
+    .form-tab {
+      flex: 1; padding: 10px;
+      border-radius: 50px; border: none;
+      font-weight: 700; font-size: .9rem;
+      cursor: pointer; background: none;
+      color: var(--gray-4); transition: all var(--transition);
+    }
+    .form-tab.active { background: var(--white); color: var(--navy); box-shadow: var(--shadow-sm); }
+
+    .auth-form { display: none; }
+    .auth-form.active { display: block; }
+
+    .auth-title {
+      font-family: var(--font-serif); font-size: 1.6rem; font-weight: 900;
+      color: var(--navy); margin-bottom: 8px;
+    }
+    .auth-sub { font-size: .88rem; color: var(--gray-4); margin-bottom: 28px; }
+
+    .password-wrap { position: relative; }
+    .password-wrap .form-input { padding-right: 46px; }
+    .eye-btn {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      font-size: 1.1rem; color: var(--gray-4);
+      transition: color var(--transition);
+    }
+    .eye-btn:hover { color: var(--navy); }
+
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 20px 0; color: var(--gray-3); font-size: .82rem;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--gray-2);
+    }
+
+    .social-btn {
+      width: 100%; padding: 12px; border: 2px solid var(--gray-2);
+      border-radius: var(--radius-md); background: var(--white);
+      font-family: var(--font-sans); font-size: .9rem; font-weight: 500;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: all var(--transition); margin-bottom: 10px;
+    }
+    .social-btn:hover { border-color: var(--navy); background: var(--gray-1); }
+
+    .form-forgot {
+      text-align: right; font-size: .8rem;
+      color: var(--coral); cursor: pointer; margin-top: -12px; margin-bottom: 20px;
+    }
+    .form-forgot:hover { text-decoration: underline; }
+
+    @media (max-width: 768px) {
+      .login-page { grid-template-columns: 1fr; }
+      .login-img { display: none; }
+      .login-form-panel { padding: 80px 24px 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-page">
+  <!-- Left -->
+  <div class="login-img">
+    <img src="https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=1000&q=80" alt="台灣旅遊">
+    <div class="login-logo">島嶼旅跡<span>·</span></div>
+    <div class="login-img-overlay">
+      <div class="login-img-quote">每一趟旅程，<br>都是<em>全新的自己</em></div>
+      <div class="login-img-sub">加入島嶼旅跡，開啟你的台灣深度之旅</div>
+    </div>
+  </div>
+
+  <!-- Right -->
+  <div class="login-form-panel">
+    <div class="login-form-inner">
+      <div class="form-tabs">
+        <button class="form-tab active" id="tab-login" onclick="switchTab('login')">登入</button>
+        <button class="form-tab" id="tab-register" onclick="switchTab('register')">註冊</button>
+      </div>
+
+      <!-- Login Form -->
+      <div class="auth-form active" id="form-login">
+        <div class="auth-title">歡迎回來 👋</div>
+        <div class="auth-sub">登入帳號以管理你的旅行體驗</div>
+
+        <div class="form-group">
+          <label class="form-label" for="l-email">電子信箱</label>
+          <input class="form-input" id="l-email" type="email" placeholder="your@email.com">
+          <div class="form-error" id="l-err-email">請輸入正確的電子信箱</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="l-pw">密碼</label>
+          <div class="password-wrap">
+            <input class="form-input" id="l-pw" type="password" placeholder="輸入密碼">
+            <button class="eye-btn" onclick="togglePw('l-pw', this)" type="button">👁</button>
+          </div>
+          <div class="form-error" id="l-err-pw">請輸入密碼</div>
+        </div>
+        <div class="form-forgot">忘記密碼？</div>
+
+        <button class="btn btn-primary" style="width:100%;padding:14px;" onclick="doLogin()">登入</button>
+
+        <div class="divider">或使用</div>
+        <button class="social-btn">🌐 使用 Google 帳號登入</button>
+        <button class="social-btn">📘 使用 Facebook 帳號登入</button>
+
+        <p style="text-align:center;font-size:.82rem;color:var(--gray-4);margin-top:20px;">
+          還沒有帳號？<button onclick="switchTab('register')" style="color:var(--coral);font-weight:700;background:none;border:none;cursor:pointer;font-size:.82rem;">點此免費註冊</button>
+        </p>
+      </div>
+
+      <!-- Register Form -->
+      <div class="auth-form" id="form-register">
+        <div class="auth-title">建立帳號 🎉</div>
+        <div class="auth-sub">加入我們，開啟你的台灣在地體驗</div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label" for="r-fname">姓名</label>
+            <input class="form-input" id="r-fname" type="text" placeholder="您的名字">
+            <div class="form-error" id="r-err-name">請輸入姓名</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="r-phone">手機號碼</label>
+            <input class="form-input" id="r-phone" type="tel" placeholder="09XX-XXXXXX">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="r-email">電子信箱</label>
+          <input class="form-input" id="r-email" type="email" placeholder="your@email.com">
+          <div class="form-error" id="r-err-email">請輸入正確的電子信箱</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="r-pw">設定密碼</label>
+          <div class="password-wrap">
+            <input class="form-input" id="r-pw" type="password" placeholder="至少8個字元">
+            <button class="eye-btn" onclick="togglePw('r-pw', this)" type="button">👁</button>
+          </div>
+          <div class="form-error" id="r-err-pw">密碼至少需要8個字元</div>
+        </div>
+
+        <button class="btn btn-primary" style="width:100%;padding:14px;" onclick="doRegister()">建立帳號</button>
+
+        <p style="text-align:center;font-size:.78rem;color:var(--gray-4);margin-top:16px;line-height:1.6;">
+          註冊即表示您同意我們的<a href="#" style="color:var(--coral);">服務條款</a>與<a href="#" style="color:var(--coral);">隱私政策</a>
+        </p>
+        <p style="text-align:center;font-size:.82rem;color:var(--gray-4);margin-top:12px;">
+          已有帳號？<button onclick="switchTab('login')" style="color:var(--coral);font-weight:700;background:none;border:none;cursor:pointer;font-size:.82rem;">點此登入</button>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="./js/prevent-devtools.js"></script>
+<script src="./js/shared.js"></script>
+<script>
+  function switchTab(tab) {
+    document.getElementById('form-login').classList.toggle('active', tab==='login');
+    document.getElementById('form-register').classList.toggle('active', tab==='register');
+    document.getElementById('tab-login').classList.toggle('active', tab==='login');
+    document.getElementById('tab-register').classList.toggle('active', tab==='register');
+  }
+
+  function togglePw(id, btn) {
+    const el = document.getElementById(id);
+    const isText = el.type === 'text';
+    el.type = isText ? 'password' : 'text';
+    btn.textContent = isText ? '👁' : '🙈';
+  }
+
+  function doLogin() {
+    const email = document.getElementById('l-email').value.trim();
+    const pw = document.getElementById('l-pw').value;
+    let ok = true;
+    function setErr(errId, inputId, show) {
+      document.getElementById(errId).classList.toggle('show', show);
+      document.getElementById(inputId).classList.toggle('error', show);
+      if (show) ok = false;
+    }
+    setErr('l-err-email', 'l-email', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+    setErr('l-err-pw', 'l-pw', pw.length < 1);
+    if (ok) {
+      localStorage.setItem('it_user', JSON.stringify({ name: '旅遊達人', email }));
+      location.href = 'profile.html';
+    }
+  }
+
+  function doRegister() {
+    const name = document.getElementById('r-fname').value.trim();
+    const email = document.getElementById('r-email').value.trim();
+    const pw = document.getElementById('r-pw').value;
+    let ok = true;
+    function setErr(errId, inputId, show) {
+      document.getElementById(errId).classList.toggle('show', show);
+      document.getElementById(inputId).classList.toggle('error', show);
+      if (show) ok = false;
+    }
+    setErr('r-err-name', 'r-fname', name.length < 2);
+    setErr('r-err-email', 'r-email', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+    setErr('r-err-pw', 'r-pw', pw.length < 8);
+    if (ok) {
+      localStorage.setItem('it_user', JSON.stringify({ name, email }));
+      location.href = 'profile.html';
+    }
+  }
+</script>
+</body>
+</html>

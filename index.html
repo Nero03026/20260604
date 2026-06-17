@@ -1,174 +1,329 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        #cards {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>島嶼旅跡 — 探索台灣在地體驗</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <style>
+    /* ─── HERO ─── */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center;
+      overflow: hidden;
+      background: var(--navy);
+    }
+    .hero__bg {
+      position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1470004914212-05527e49370b?w=1600&q=80') center/cover;
+      opacity: .45;
+      transform: scale(1.04);
+      transition: transform 8s ease;
+    }
+    .hero:hover .hero__bg { transform: scale(1); }
+    .hero__content {
+      position: relative; z-index: 2;
+      padding: 0 5%; max-width: 700px;
+    }
+    .hero__eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      color: var(--coral); font-size: .85rem; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero__eyebrow::before {
+      content: ''; width: 30px; height: 2px; background: var(--coral);
+    }
+    .hero__title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      font-weight: 900; line-height: 1.15;
+      color: var(--white); margin-bottom: 20px;
+    }
+    .hero__title em { color: var(--coral); font-style: normal; }
+    .hero__sub {
+      font-size: 1.1rem; color: rgba(255,255,255,.8);
+      line-height: 1.7; margin-bottom: 40px; max-width: 480px;
+    }
+    .hero__actions { display: flex; gap: 16px; flex-wrap: wrap; }
 
-        .card {
-            width: calc(100px - 20px);
-            padding: 10px;
-            text-align: center;
-            background-color: aquamarine;
-        }
+    /* Search Bar */
+    .search-bar {
+      background: var(--white);
+      border-radius: 60px;
+      display: flex; align-items: center; gap: 0;
+      padding: 8px 8px 8px 24px;
+      box-shadow: var(--shadow-lg);
+      max-width: 640px;
+      margin-top: 48px;
+      position: relative; z-index: 2;
+    }
+    .search-bar select, .search-bar input[type="date"] {
+      border: none; outline: none;
+      font-family: var(--font-sans); font-size: .9rem;
+      color: var(--text); background: transparent;
+      padding: 8px 16px;
+      flex: 1;
+      min-width: 0;
+    }
+    .search-bar .sep { width: 1px; height: 28px; background: var(--gray-2); flex-shrink: 0; }
+    .search-bar button {
+      background: var(--coral); color: var(--white);
+      border: none; border-radius: 50px;
+      padding: 12px 28px; font-weight: 700; font-size: .95rem;
+      cursor: pointer; white-space: nowrap;
+      transition: background var(--transition);
+      flex-shrink: 0;
+    }
+    .search-bar button:hover { background: var(--coral-light); }
 
-        .card img {
-            width: 100%;
-            height: 50px;
-            object-fit: cover;
-        }
-    </style>
+    /* Stats strip */
+    .stats-strip {
+      background: var(--sand);
+      padding: 32px 5%;
+      display: flex; align-items: center; justify-content: center;
+      gap: 60px; flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-family: var(--font-serif);
+      font-size: 2rem; font-weight: 900; color: var(--navy);
+      display: block;
+    }
+    .stat-num em { color: var(--coral); font-style: normal; }
+    .stat-label { font-size: .82rem; color: var(--gray-4); }
+
+    /* Category Icons */
+    .categories { padding: 80px 5%; background: var(--white); }
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 16px; margin-top: 40px;
+    }
+    .cat-item {
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      padding: 20px 12px;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--gray-2);
+      cursor: pointer;
+      transition: all var(--transition);
+      text-align: center;
+    }
+    .cat-item:hover {
+      border-color: var(--coral);
+      background: #FEF0EB;
+      transform: translateY(-4px);
+    }
+    .cat-icon { font-size: 2rem; }
+    .cat-label { font-size: .78rem; font-weight: 700; color: var(--navy); }
+
+    /* Featured */
+    .featured { padding: 80px 5%; background: var(--sand); }
+    .featured-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; margin-top: 40px; }
+
+    /* Banner CTA */
+    .banner-cta {
+      background: var(--navy);
+      padding: 80px 5%;
+      position: relative; overflow: hidden;
+    }
+    .banner-cta::before {
+      content: '';
+      position: absolute; right: -80px; top: -80px;
+      width: 400px; height: 400px; border-radius: 50%;
+      background: rgba(232,97,60,.12);
+    }
+    .banner-cta::after {
+      content: '';
+      position: absolute; left: 40%; bottom: -60px;
+      width: 240px; height: 240px; border-radius: 50%;
+      background: rgba(74,124,89,.1);
+    }
+    .banner-cta__inner {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 40px; flex-wrap: wrap;
+    }
+    .banner-cta__title {
+      font-family: var(--font-serif); font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 900; color: var(--white); margin-bottom: 12px;
+    }
+    .banner-cta__sub { color: rgba(255,255,255,.7); max-width: 460px; }
+
+    /* Testimonials */
+    .testimonials { padding: 80px 5%; }
+    .testimonial-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 40px; }
+    .testimonial-card {
+      background: var(--sand);
+      padding: 28px; border-radius: var(--radius-lg);
+    }
+    .t-stars { color: #F5A623; margin-bottom: 14px; }
+    .t-text { font-size: .92rem; line-height: 1.75; color: var(--gray-4); margin-bottom: 18px; font-style: italic; }
+    .t-author { display: flex; align-items: center; gap: 12px; }
+    .t-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      object-fit: cover;
+    }
+    .t-name { font-weight: 700; font-size: .88rem; }
+    .t-meta { font-size: .78rem; color: var(--gray-4); }
+
+    @media (max-width: 900px) {
+      .cat-grid { grid-template-columns: repeat(4,1fr); }
+      .featured-grid { grid-template-columns: repeat(2,1fr); }
+      .testimonial-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .cat-grid { grid-template-columns: repeat(4,1fr); }
+      .search-bar { flex-direction: column; border-radius: 20px; padding: 16px; }
+      .search-bar .sep { display: none; }
+      .stats-strip { gap: 30px; }
+    }
+  </style>
 </head>
-
 <body>
-    <section id="cards">
-        <div class="card">
-            <div>#000</div>
-            <img src="" alt="">
-            <div>OOO</div>
-            <div>
-                <span>OO</span>
-                <span>OO</span>
-            </div>
+
+<div id="nav-root"></div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero__bg"></div>
+  <div class="hero__content">
+    <div class="hero__eyebrow">Taiwan Experiences</div>
+    <h1 class="hero__title">與台灣這片土地，<br><em>真實相遇</em></h1>
+    <p class="hero__sub">超過 200 個在地嚮導帶路的深度體驗，從山頂到海岸，從廚房到工坊，找到屬於你的那一場旅途。</p>
+
+    <div class="search-bar">
+      <select id="dest-select" aria-label="選擇目的地">
+        <option value="">🗺 選擇目的地</option>
+        <option>台北</option><option>新北</option><option>桃園</option>
+        <option>台中</option><option>台南</option><option>高雄</option>
+        <option>宜蘭</option><option>花蓮</option><option>嘉義</option>
+        <option>屏東</option><option>彰化</option>
+      </select>
+      <div class="sep"></div>
+      <input type="date" id="date-input" aria-label="選擇日期">
+      <button onclick="doSearch()">搜尋體驗</button>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stat"><span class="stat-num">200<em>+</em></span><span class="stat-label">精選在地體驗</span></div>
+  <div class="stat"><span class="stat-num">98<em>%</em></span><span class="stat-label">旅客好評率</span></div>
+  <div class="stat"><span class="stat-num">150<em>+</em></span><span class="stat-label">認證在地嚮導</span></div>
+  <div class="stat"><span class="stat-num">22</span><span class="stat-label">縣市全台覆蓋</span></div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="categories">
+  <div class="container">
+    <div class="section-eyebrow">Explore by Theme</div>
+    <h2 class="section-title">找到你的體驗類型</h2>
+    <div class="cat-grid" id="cat-grid">
+      <div class="cat-item" onclick="goCategory('戶外')"><div class="cat-icon">🏔</div><div class="cat-label">戶外冒險</div></div>
+      <div class="cat-item" onclick="goCategory('手作')"><div class="cat-icon">🎨</div><div class="cat-label">手作工藝</div></div>
+      <div class="cat-item" onclick="goCategory('美食')"><div class="cat-icon">🍜</div><div class="cat-label">美食料理</div></div>
+      <div class="cat-item" onclick="goCategory('文化')"><div class="cat-icon">🏛</div><div class="cat-label">文化歷史</div></div>
+      <div class="cat-item" onclick="goCategory('戶外')"><div class="cat-icon">🌊</div><div class="cat-label">水上活動</div></div>
+      <div class="cat-item" onclick="goCategory('戶外')"><div class="cat-icon">🌿</div><div class="cat-label">農村生活</div></div>
+      <div class="cat-item" onclick="goCategory('文化')"><div class="cat-icon">🎭</div><div class="cat-label">傳統藝術</div></div>
+      <div class="cat-item" onclick="goCategory('手作')"><div class="cat-icon">📸</div><div class="cat-label">攝影旅拍</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED -->
+<section class="featured">
+  <div class="container">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:40px;">
+      <div>
+        <div class="section-eyebrow">Hot This Week</div>
+        <h2 class="section-title" style="margin-bottom:0">本週熱門體驗</h2>
+      </div>
+      <a href="products.html" class="btn btn-outline" style="border-radius:50px;">查看全部 →</a>
+    </div>
+    <div class="featured-grid" id="featured-grid"></div>
+  </div>
+</section>
+
+<!-- BANNER CTA -->
+<section class="banner-cta">
+  <div class="banner-cta__inner">
+    <div>
+      <h2 class="banner-cta__title">成為在地嚮導，<br>分享你的台灣故事</h2>
+      <p class="banner-cta__sub">你是本地達人嗎？無論是山林秘徑、漁村廚藝還是傳統技藝，都可以化為獨一無二的體驗，與來自世界各地的旅人分享。</p>
+    </div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+      <a href="#" class="btn btn-primary" style="font-size:1rem;padding:14px 32px;">立即申請嚮導</a>
+      <a href="about.html" class="btn btn-white" style="font-size:1rem;padding:14px 32px;">了解更多</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="container">
+    <div class="section-eyebrow">Traveler Reviews</div>
+    <h2 class="section-title">旅人的真實心聲</h2>
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-text">「清水斷崖的獨木舟體驗讓我終生難忘，嚮導非常專業，安全又刺激。這是我在台灣最棒的一天！」</p>
+        <div class="t-author">
+          <img class="t-avatar" src="https://i.pravatar.cc/80?img=47" alt="旅客">
+          <div><div class="t-name">陳佳穎</div><div class="t-meta">來自台北 · 2025.03</div></div>
         </div>
-    </section>
-    <!-- https://pokeapi.co/ -->
-    <script>
-        // 一、站存功能 把fetch資料站存到 localStorage
-        // 二、過濾功能
+      </div>
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-text">「台南古蹟導覽讓我對這座城市有了全新的認識，嚮導的故事講解生動有趣，強烈推薦給每一位旅人！」</p>
+        <div class="t-author">
+          <img class="t-avatar" src="https://i.pravatar.cc/80?img=32" alt="旅客">
+          <div><div class="t-name">林大偉</div><div class="t-meta">來自高雄 · 2025.04</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★☆</div>
+        <p class="t-text">「九份的陶藝體驗非常療癒，老師耐心指導，做出了自己的第一個茶杯，會帶著這份記憶回家。」</p>
+        <div class="t-author">
+          <img class="t-avatar" src="https://i.pravatar.cc/80?img=12" alt="旅客">
+          <div><div class="t-name">山田あかり</div><div class="t-meta">來自日本 · 2025.05</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        const Types = {
-            "normal": { "zh": "一般", "color": "#A8A77A" },
-            "fighting": { "zh": "格鬥", "color": "#C22E28" },
-            "flying": { "zh": "飛行", "color": "#A98FF3" },
-            "poison": { "zh": "毒", "color": "#A33EA1" },
-            "ground": { "zh": "地面", "color": "#E2BF65" },
-            "rock": { "zh": "岩石", "color": "#B6A136" },
-            "bug": { "zh": "蟲", "color": "#A6B91A" },
-            "ghost": { "zh": "幽靈", "color": "#735797" },
-            "steel": { "zh": "鋼", "color": "#B7B7CE" },
-            "fire": { "zh": "火", "color": "#EE8130" },
-            "water": { "zh": "水", "color": "#6390F0" },
-            "grass": { "zh": "草", "color": "#7AC74C" },
-            "electric": { "zh": "電", "color": "#F7D02C" },
-            "psychic": { "zh": "超能力", "color": "#F95587" },
-            "ice": { "zh": "冰", "color": "#96D9D6" },
-            "dragon": { "zh": "龍", "color": "#6F35FC" },
-            "dark": { "zh": "惡", "color": "#705746" },
-            "fairy": { "zh": "妖精", "color": "#D685AD" }
-        }
-        // 抓到的資料會盡量不要直接拿來使用
-        // 先放到一個變數整理好之後再使用它
-        let pokemons = [
-            // {
-            //     id: "4564456",
-            //     name: '456456',
-            //     img: 'OOO',
-            //     types: ['213', '123'],
-            // }
-        ];
-        // 1.抓取寶可夢清單
-        async function getpokemon(total) {
-            // ※async　只有下一層可以使用 await 如果是在包一層的裡面是無法使用
-            // 會增加一個動態取的資料的功能
-            // 取得url網址列表
-            const allRes = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${total}&offset=0`)
-            const allUrl = await allRes.json();
-            console.log(allUrl);
-            // pokemons = await Promise.all(allUrl.results.map(element => onePokemon(element.url)
-            // ));
-            // 跑回圈抓取細部資料
-            // forEach-> 不支援非同步的方式處理
-            // allUrl.results.forEach(element => {
-            //     onePokemon(element.url);
-            // });
+<div id="footer-root"></div>
 
-            // 替代方案使用 for
-            for (const element of allUrl.results) {
-                await onePokemon(element.url); // 等這隻抓完，才會進入下一次迴圈
-            }
-            
-            console.log(pokemons);
-            await showList();
-        }
-        getpokemon(50);
+<script src="./js/prevent-devtools.js"></script>
+<script src="./js/shared.js"></script>
+<script>
+  document.getElementById('nav-root').innerHTML = renderNavbar('index.html');
+  document.getElementById('footer-root').innerHTML = renderFooter();
+  initNavbar();
 
-        async function onePokemon(url) {
-            // 個別的資料
-            const oneRes = await fetch(url)
-            const oneUrl = await oneRes.json();
-            // 資料處理
-            // console.log(oneUrl.types.map((item) => Types[item.type.name].zh));
-            // return {
-            //     id: oneUrl.id,
-            //     name: oneUrl.name,
-            //     img: oneUrl.sprites.back_shiny,
-            //     types: oneUrl.types.map((item) => Types[item.type.name].zh),
-            // };
-            // 3.資料更新到陣列裡面
-            pokemons.push({
-                id: oneUrl.id,
-                name: oneUrl.name,
-                img: oneUrl.sprites.back_shiny,
-                types: oneUrl.types.map((item) => Types[item.type.name].zh),
-            });
-            // console.log(oneUrl.id);
-            // console.log(oneUrl.sprites.back_shiny);
-            // console.log(oneUrl.name);
-            // console.log(oneUrl.types);
-            // 把取得到的資料整理成網頁所使用的內容
+  // Render featured cards (first 8)
+  const featGrid = document.getElementById('featured-grid');
+  EXPERIENCES.slice(0, 8).forEach(exp => {
+    featGrid.innerHTML += renderCard(exp);
+  });
 
-            // console.log(oneUrl);
-        }
+  function doSearch() {
+    const dest = document.getElementById('dest-select').value;
+    const date = document.getElementById('date-input').value;
+    let url = 'products.html';
+    const params = [];
+    if (dest) params.push('region=' + encodeURIComponent(dest));
+    if (date) params.push('date=' + date);
+    if (params.length) url += '?' + params.join('&');
+    location.href = url;
+  }
 
-        // 2.把畫面與資料串起來 -> 包成方法(因為要等資料更新資後在把畫面呈現上去)
-        function showList() {
-            console.log(pokemons);
-            const cards = document.querySelector('#cards');
-            cards.innerHTML = '';
-            pokemons.forEach((pokemon) => {
-                console.log(pokemon);
-                cards.innerHTML += `
-                    <div class="card">
-                        <div>${pokemon.id}</div>
-                        <img src="${pokemon.img}" alt="">
-                        <div>${pokemon.name}</div>
-                        <div>
-                            ${pokemon.types.map((item) => `<span>${item}</span>`).join('')}
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-
-        // fetch(`https://pokeapi.co/api/v2/pokemon?limit=2000&offset=0`)
-        //     .then((res) => res.json())
-        //     .then((data) => {
-        //         console.log(data.results[0].url);
-        //         // 1.一次取的資料 (要換成跑迴圈所有的內容)
-        //         fetch(data.results[0].url)
-        //             .then((res1) => res1.json())
-        //             .then((data1) => {
-        //                 console.log(data1.id);
-        //                 console.log(data1.sprites.back_shiny);
-        //                 console.log(data1.name);
-        //                 console.log(data1.types);
-        //             })
-        //     })
-        // 2.個別抓取裡面的內容
-        // 編號 id
-        // 圖片 sprites.back_shiny
-        // 名字 name
-        // 屬性 types 跑回圈 取得 type.name
-    </script>
+  function goCategory(cat) {
+    location.href = 'products.html?category=' + encodeURIComponent(cat);
+  }
+</script>
 </body>
-
 </html>

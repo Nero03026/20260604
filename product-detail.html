@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>體驗詳情 — 島嶼旅跡</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <style>
+    .detail-layout {
+      padding: 100px 5% 80px;
+      max-width: 1200px; margin: 0 auto;
+    }
+    /* Gallery */
+    .gallery { margin-bottom: 40px; }
+    .gallery-main {
+      width: 100%; height: 480px; object-fit: cover;
+      border-radius: var(--radius-lg); margin-bottom: 12px;
+      cursor: zoom-in; transition: opacity .2s;
+    }
+    .gallery-thumbs { display: flex; gap: 10px; }
+    .gallery-thumb {
+      width: 100px; height: 70px; object-fit: cover;
+      border-radius: var(--radius-sm);
+      cursor: pointer; opacity: .6;
+      border: 3px solid transparent;
+      transition: all var(--transition);
+    }
+    .gallery-thumb.active, .gallery-thumb:hover { opacity: 1; border-color: var(--coral); }
+
+    /* Body grid */
+    .detail-grid { display: grid; grid-template-columns: 1fr 340px; gap: 48px; align-items: start; }
+    .detail-main h1 {
+      font-family: var(--font-serif); font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 900; color: var(--navy); margin-bottom: 14px;
+    }
+    .detail-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
+    .detail-meta-item { display: flex; align-items: center; gap: 6px; font-size: .88rem; color: var(--gray-4); }
+    .detail-meta-item strong { color: var(--navy); font-weight: 700; }
+
+    .detail-section { margin-bottom: 40px; }
+    .detail-section-title {
+      font-family: var(--font-serif); font-size: 1.15rem; font-weight: 700;
+      color: var(--navy); margin-bottom: 16px;
+      padding-bottom: 10px; border-bottom: 2px solid var(--sand-dark);
+    }
+    .detail-section p { font-size: .95rem; line-height: 1.85; color: var(--gray-4); margin-bottom: 12px; }
+    .highlight-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .highlight-list li { display: flex; align-items: flex-start; gap: 10px; font-size: .92rem; color: var(--text); }
+    .highlight-list li::before { content: '✦'; color: var(--coral); font-size: .7rem; margin-top: 4px; flex-shrink: 0; }
+    .include-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .include-box { background: var(--sand); border-radius: var(--radius-md); padding: 18px; }
+    .include-box-title { font-weight: 700; font-size: .88rem; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .include-box ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .include-box li { font-size: .85rem; color: var(--gray-4); display: flex; align-items: flex-start; gap: 8px; }
+    .include-box li::before { content: '•'; flex-shrink: 0; }
+
+    /* Sticky booking sidebar */
+    .booking-sidebar {
+      position: sticky; top: 100px;
+      background: var(--white); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: 28px;
+      border: 2px solid var(--gray-2);
+    }
+    .booking-price {
+      font-family: var(--font-serif); font-size: 2rem; font-weight: 900;
+      color: var(--coral); margin-bottom: 4px;
+    }
+    .booking-price-label { font-size: .82rem; color: var(--gray-4); margin-bottom: 20px; }
+    .booking-rating {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 0; border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2); margin-bottom: 20px;
+    }
+    .quantity-control {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 20px;
+    }
+    .qty-label { font-size: .85rem; font-weight: 700; flex: 1; }
+    .qty-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 2px solid var(--navy); color: var(--navy);
+      font-size: 1.2rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; background: none;
+      transition: all var(--transition);
+    }
+    .qty-btn:hover { background: var(--navy); color: var(--white); }
+    .qty-btn:disabled { border-color: var(--gray-2); color: var(--gray-3); cursor: not-allowed; }
+    .qty-val { font-size: 1.2rem; font-weight: 700; min-width: 24px; text-align: center; }
+    .booking-total {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 0; border-top: 2px solid var(--sand-dark);
+      font-weight: 700; font-size: 1rem;
+    }
+    .booking-total-amount { font-family: var(--font-serif); font-size: 1.4rem; color: var(--coral); }
+    .booking-note { font-size: .78rem; color: var(--gray-4); margin-top: 12px; text-align: center; }
+
+    /* Reviews */
+    .review-item { padding: 20px 0; border-bottom: 1px solid var(--gray-2); }
+    .review-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .review-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+    .review-name { font-weight: 700; font-size: .9rem; }
+    .review-date { font-size: .78rem; color: var(--gray-4); }
+    .review-stars { color: #F5A623; font-size: .85rem; margin-bottom: 6px; }
+    .review-text { font-size: .9rem; color: var(--gray-4); line-height: 1.7; }
+
+    @media (max-width: 900px) {
+      .detail-grid { grid-template-columns: 1fr; }
+      .booking-sidebar { position: static; }
+      .gallery-main { height: 300px; }
+    }
+  </style>
+</head>
+<body>
+<div id="nav-root"></div>
+
+<div class="detail-layout">
+  <div class="breadcrumb">
+    <a href="index.html">首頁</a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="products.html">探索體驗</a>
+    <span class="breadcrumb-sep">›</span>
+    <span id="bc-name">體驗詳情</span>
+  </div>
+
+  <!-- Gallery -->
+  <div class="gallery">
+    <img class="gallery-main" id="gallery-main" src="" alt="主圖">
+    <div class="gallery-thumbs" id="gallery-thumbs"></div>
+  </div>
+
+  <div class="detail-grid">
+    <div class="detail-main">
+      <h1 id="exp-title">載入中...</h1>
+      <div class="detail-meta">
+        <div class="detail-meta-item">📍 <strong id="exp-region">—</strong></div>
+        <div class="detail-meta-item">⏱ <strong id="exp-duration">—</strong></div>
+        <div class="detail-meta-item">🏷 <strong id="exp-tag">—</strong></div>
+        <div class="detail-meta-item">
+          <span style="color:#F5A623;" id="exp-stars">—</span>
+          <span id="exp-reviews" style="color:var(--gray-4);font-size:.82rem;"></span>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">體驗介紹</div>
+        <p id="exp-desc">載入中...</p>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">✦ 行程亮點</div>
+        <ul class="highlight-list" id="exp-highlights"></ul>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">費用說明</div>
+        <div class="include-grid">
+          <div class="include-box">
+            <div class="include-box-title">✅ 費用包含</div>
+            <ul>
+              <li>專業嚮導帶領全程</li>
+              <li>相關活動器材與裝備</li>
+              <li>旅遊責任保險</li>
+              <li>體驗結束後的紀念照片</li>
+            </ul>
+          </div>
+          <div class="include-box">
+            <div class="include-box-title">❌ 費用不包含</div>
+            <ul>
+              <li>交通費用（往返集合點）</li>
+              <li>個人餐飲費用</li>
+              <li>個人旅遊保險</li>
+              <li>額外自費項目</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">旅客評論</div>
+        <div id="reviews-list"></div>
+      </div>
+    </div>
+
+    <!-- Booking Sidebar -->
+    <aside class="booking-sidebar">
+      <div class="booking-price" id="sidebar-price">NT$ —</div>
+      <div class="booking-price-label">/ 人起</div>
+      <div class="booking-rating">
+        <span style="color:#F5A623;" id="sidebar-stars">—</span>
+        <span style="font-size:.85rem;font-weight:700;" id="sidebar-rating">—</span>
+        <span style="font-size:.8rem;color:var(--gray-4);" id="sidebar-reviews">—</span>
+      </div>
+
+      <div class="quantity-control">
+        <div class="qty-label">參加人數</div>
+        <button class="qty-btn" id="qty-minus" onclick="changeQty(-1)">−</button>
+        <div class="qty-val" id="qty-val">1</div>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+
+      <div class="booking-total">
+        <span>總金額</span>
+        <span class="booking-total-amount" id="total-price">NT$ —</span>
+      </div>
+
+      <a id="book-btn" href="#" class="btn btn-primary" style="width:100%;margin-top:20px;justify-content:center;font-size:1.05rem;padding:16px;">
+        立刻預訂
+      </a>
+      <div class="booking-note">🔒 安全付款 · 免費取消（7天前）</div>
+    </aside>
+  </div>
+</div>
+
+<div id="footer-root"></div>
+<script src="./js/prevent-devtools.js"></script>
+<script src="./js/shared.js"></script>
+<script>
+  document.getElementById('nav-root').innerHTML = renderNavbar('');
+  document.getElementById('footer-root').innerHTML = renderFooter();
+  initNavbar();
+  document.getElementById('navbar').classList.remove('transparent');
+  document.getElementById('navbar').classList.add('scrolled');
+
+  // Get experience by ID
+  const params = new URLSearchParams(location.search);
+  const id = parseInt(params.get('id')) || 1;
+  const exp = EXPERIENCES.find(e => e.id === id) || EXPERIENCES[0];
+
+  // Fake additional images
+  const thumbImgs = [exp.img,
+    'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400&q=80',
+    'https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?w=400&q=80',
+    'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=80',
+  ];
+
+  // Gallery
+  const mainImg = document.getElementById('gallery-main');
+  mainImg.src = thumbImgs[0];
+  mainImg.alt = exp.title;
+
+  const thumbsEl = document.getElementById('gallery-thumbs');
+  thumbImgs.forEach((src, i) => {
+    const img = document.createElement('img');
+    img.className = 'gallery-thumb' + (i===0?' active':'');
+    img.src = src; img.alt = `縮圖${i+1}`;
+    img.onclick = () => {
+      mainImg.style.opacity = '0.5';
+      setTimeout(() => { mainImg.src = src; mainImg.style.opacity = '1'; }, 150);
+      document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+      img.classList.add('active');
+    };
+    thumbsEl.appendChild(img);
+  });
+
+  // Fill info
+  document.getElementById('bc-name').textContent = exp.title;
+  document.getElementById('exp-title').textContent = exp.title;
+  document.getElementById('exp-region').textContent = exp.region;
+  document.getElementById('exp-duration').textContent = exp.duration;
+  document.getElementById('exp-tag').textContent = exp.tag;
+  document.getElementById('exp-stars').textContent = '★'.repeat(Math.floor(exp.rating));
+  document.getElementById('exp-reviews').textContent = `(${exp.reviews} 則評論)`;
+  document.getElementById('exp-desc').textContent = `這是一場深入${exp.region}在地生活的難忘體驗。由當地資深嚮導親自帶領，您將突破一般觀光行程的框架，真正感受這片土地的靈魂與韻味。無論您是第一次探索台灣，或是熟悉這座島嶼的旅人，這場體驗都將讓您看見截然不同的風景。`;
+
+  const highlights = [
+    `深入探索${exp.region}最具代表性的自然與人文景觀`,
+    `由在地認證嚮導全程帶領，分享第一手在地故事`,
+    `小班制體驗（最多 8 人），確保每位旅客都獲得充分關注`,
+    `適合各年齡層，無需特殊技能或體力即可參與`,
+    `體驗結束後提供精美電子紀念照片供旅客珍藏`,
+  ];
+  document.getElementById('exp-highlights').innerHTML = highlights.map(h => `<li>${h}</li>`).join('');
+
+  // Sidebar
+  document.getElementById('sidebar-price').textContent = `NT$ ${exp.price.toLocaleString()}`;
+  document.getElementById('sidebar-stars').textContent = '★'.repeat(Math.floor(exp.rating));
+  document.getElementById('sidebar-rating').textContent = exp.rating;
+  document.getElementById('sidebar-reviews').textContent = `(${exp.reviews})`;
+  document.getElementById('book-btn').href = `booking-step1.html?id=${exp.id}`;
+
+  // Quantity
+  let qty = 1;
+  function changeQty(delta) {
+    qty = Math.max(1, Math.min(10, qty + delta));
+    document.getElementById('qty-val').textContent = qty;
+    document.getElementById('qty-minus').disabled = qty <= 1;
+    document.getElementById('total-price').textContent = `NT$ ${(exp.price * qty).toLocaleString()}`;
+  }
+  changeQty(0);
+
+  // Reviews
+  const reviewData = [
+    { name: '林小美', date: '2025.04', rating: 5, text: '非常棒的體驗！嚮導超級專業又親切，讓我們玩得非常開心。強烈推薦給所有想要深度認識台灣的朋友！', avatar: 'https://i.pravatar.cc/80?img=5' },
+    { name: '王大明', date: '2025.03', rating: 5, text: '這是我今年最難忘的體驗之一，感謝嚮導分享了很多在地故事，讓整個旅程充滿意義。下次一定還要再來！', avatar: 'https://i.pravatar.cc/80?img=12' },
+    { name: 'Kenji Y.', date: '2025.02', rating: 4, text: '來自日本的我，透過這次體驗更加認識了台灣的美。嚮導的英文解說也很流暢，真的很棒的安排。', avatar: 'https://i.pravatar.cc/80?img=33' },
+  ];
+  document.getElementById('reviews-list').innerHTML = reviewData.map(r => `
+    <div class="review-item">
+      <div class="review-header">
+        <img class="review-avatar" src="${r.avatar}" alt="${r.name}">
+        <div>
+          <div class="review-name">${r.name}</div>
+          <div class="review-date">${r.date}</div>
+        </div>
+      </div>
+      <div class="review-stars">${'★'.repeat(r.rating)}</div>
+      <div class="review-text">${r.text}</div>
+    </div>
+  `).join('');
+</script>
+</body>
+</html>

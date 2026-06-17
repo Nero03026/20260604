@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>探索體驗 — 島嶼旅跡</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <style>
+    .products-layout {
+      padding: 100px 5% 80px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 40px;
+      max-width: 1280px; margin: 0 auto;
+      align-items: start;
+    }
+    /* Sidebar */
+    .sidebar {
+      position: sticky; top: 100px;
+      background: var(--white); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: 28px;
+    }
+    .sidebar-title {
+      font-family: var(--font-serif); font-size: 1rem; font-weight: 700;
+      color: var(--navy); margin-bottom: 16px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .sidebar-clear {
+      font-size: .75rem; font-weight: 500; color: var(--coral);
+      cursor: pointer; background: none; border: none;
+    }
+    .filter-group { margin-bottom: 28px; }
+    .filter-label {
+      font-size: .78rem; font-weight: 700; color: var(--gray-4);
+      text-transform: uppercase; letter-spacing: .08em;
+      margin-bottom: 12px;
+    }
+    .filter-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      padding: 6px 14px; border-radius: 50px;
+      border: 2px solid var(--gray-2);
+      font-size: .82rem; font-weight: 500;
+      cursor: pointer; background: var(--white);
+      transition: all var(--transition);
+      color: var(--gray-4);
+    }
+    .chip.active { background: var(--coral); color: var(--white); border-color: var(--coral); }
+    .chip:hover:not(.active) { border-color: var(--coral); color: var(--coral); }
+
+    /* Price Range */
+    .price-range { display: flex; gap: 8px; align-items: center; }
+    .price-range input {
+      width: 90px; padding: 8px 10px;
+      border: 2px solid var(--gray-2); border-radius: var(--radius-sm);
+      font-size: .85rem; font-family: var(--font-sans); outline: none;
+    }
+    .price-range input:focus { border-color: var(--coral); }
+
+    /* Results */
+    .results-header {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+      margin-bottom: 24px;
+    }
+    .results-count { font-size: .9rem; color: var(--gray-4); }
+    .results-count strong { color: var(--navy); }
+    .sort-select {
+      padding: 8px 16px; border: 2px solid var(--gray-2);
+      border-radius: 50px; font-family: var(--font-sans);
+      font-size: .85rem; outline: none; cursor: pointer;
+      transition: border-color var(--transition);
+    }
+    .sort-select:focus { border-color: var(--coral); }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 24px;
+    }
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center; padding: 80px 20px;
+      color: var(--gray-4);
+    }
+    .no-results-icon { font-size: 3rem; margin-bottom: 16px; }
+
+    @media (max-width: 900px) {
+      .products-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+    }
+  </style>
+</head>
+<body>
+<div id="nav-root"></div>
+
+<div class="products-layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">
+      篩選條件
+      <button class="sidebar-clear" onclick="clearFilters()">清除全部</button>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">地區</div>
+      <div class="filter-chips" id="region-chips">
+        <button class="chip" data-filter="region" data-val="台北">台北</button>
+        <button class="chip" data-filter="region" data-val="新北">新北</button>
+        <button class="chip" data-filter="region" data-val="台中">台中</button>
+        <button class="chip" data-filter="region" data-val="台南">台南</button>
+        <button class="chip" data-filter="region" data-val="高雄">高雄</button>
+        <button class="chip" data-filter="region" data-val="宜蘭">宜蘭</button>
+        <button class="chip" data-filter="region" data-val="花蓮">花蓮</button>
+        <button class="chip" data-filter="region" data-val="嘉義">嘉義</button>
+        <button class="chip" data-filter="region" data-val="屏東">屏東</button>
+        <button class="chip" data-filter="region" data-val="彰化">彰化</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">主題分類</div>
+      <div class="filter-chips">
+        <button class="chip" data-filter="category" data-val="戶外">🏔 戶外</button>
+        <button class="chip" data-filter="category" data-val="手作">🎨 手作</button>
+        <button class="chip" data-filter="category" data-val="美食">🍜 美食</button>
+        <button class="chip" data-filter="category" data-val="文化">🏛 文化</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">時間</div>
+      <div class="filter-chips">
+        <button class="chip" data-filter="duration" data-val="2小時">2小時</button>
+        <button class="chip" data-filter="duration" data-val="3小時">3小時</button>
+        <button class="chip" data-filter="duration" data-val="4小時">4小時</button>
+        <button class="chip" data-filter="duration" data-val="半天">半天</button>
+        <button class="chip" data-filter="duration" data-val="全天">全天</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">價格區間（NT$）</div>
+      <div class="price-range">
+        <input type="number" id="price-min" placeholder="最低" min="0" oninput="applyFilters()">
+        <span style="color:var(--gray-3)">—</span>
+        <input type="number" id="price-max" placeholder="最高" min="0" oninput="applyFilters()">
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+    <div class="breadcrumb">
+      <a href="index.html">首頁</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>探索體驗</span>
+    </div>
+    <div class="results-header">
+      <div class="results-count">共找到 <strong id="result-count">0</strong> 個體驗</div>
+      <select class="sort-select" id="sort-select" onchange="applyFilters()">
+        <option value="default">預設排序</option>
+        <option value="price-asc">價格由低到高</option>
+        <option value="price-desc">價格由高到低</option>
+        <option value="rating">評分最高</option>
+        <option value="popular">最多評論</option>
+      </select>
+    </div>
+    <div class="products-grid" id="products-grid"></div>
+  </main>
+</div>
+
+<div id="footer-root"></div>
+<script src="./js/prevent-devtools.js"></script>
+<script src="./js/shared.js"></script>
+<script>
+  document.getElementById('nav-root').innerHTML = renderNavbar('products.html');
+  document.getElementById('footer-root').innerHTML = renderFooter();
+  initNavbar();
+  document.getElementById('navbar').classList.remove('transparent');
+  document.getElementById('navbar').classList.add('scrolled');
+
+  let filters = { region: null, category: null, duration: null };
+
+  // Init from URL params
+  const params = new URLSearchParams(location.search);
+  if (params.get('region')) setFilter('region', params.get('region'));
+  if (params.get('category')) setFilter('category', params.get('category'));
+
+  function setFilter(type, val) {
+    filters[type] = val;
+    document.querySelectorAll(`.chip[data-filter="${type}"]`).forEach(c => {
+      c.classList.toggle('active', c.dataset.val === val);
+    });
+  }
+
+  // Chip clicks
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const { filter: type, val } = chip.dataset;
+      if (filters[type] === val) {
+        filters[type] = null;
+        chip.classList.remove('active');
+      } else {
+        document.querySelectorAll(`.chip[data-filter="${type}"]`).forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        filters[type] = val;
+      }
+      applyFilters();
+    });
+  });
+
+  function clearFilters() {
+    filters = { region: null, category: null, duration: null };
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    document.getElementById('price-min').value = '';
+    document.getElementById('price-max').value = '';
+    applyFilters();
+  }
+
+  function applyFilters() {
+    let data = [...EXPERIENCES];
+    if (filters.region) data = data.filter(e => e.region === filters.region);
+    if (filters.category) data = data.filter(e => e.category === filters.category);
+    if (filters.duration) data = data.filter(e => e.duration === filters.duration);
+    const min = parseInt(document.getElementById('price-min').value) || 0;
+    const max = parseInt(document.getElementById('price-max').value) || Infinity;
+    data = data.filter(e => e.price >= min && e.price <= max);
+
+    const sort = document.getElementById('sort-select').value;
+    if (sort === 'price-asc') data.sort((a,b) => a.price - b.price);
+    else if (sort === 'price-desc') data.sort((a,b) => b.price - a.price);
+    else if (sort === 'rating') data.sort((a,b) => b.rating - a.rating);
+    else if (sort === 'popular') data.sort((a,b) => b.reviews - a.reviews);
+
+    document.getElementById('result-count').textContent = data.length;
+    const grid = document.getElementById('products-grid');
+    if (data.length === 0) {
+      grid.innerHTML = `<div class="no-results"><div class="no-results-icon">🔍</div><div style="font-size:1.1rem;font-weight:700;margin-bottom:8px;">找不到符合條件的體驗</div><div style="font-size:.9rem;">試試調整篩選條件，或 <a href="products.html" style="color:var(--coral)">查看全部體驗</a></div></div>`;
+    } else {
+      grid.innerHTML = data.map(e => renderCard(e)).join('');
+    }
+  }
+
+  applyFilters();
+</script>
+</body>
+</html>

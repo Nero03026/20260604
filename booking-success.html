@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>預訂成功！ — 島嶼旅跡</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <style>
+    .success-page { padding: 120px 5% 80px; max-width: 680px; margin: 0 auto; text-align: center; }
+    .success-icon-wrap {
+      width: 100px; height: 100px; border-radius: 50%;
+      background: var(--green-light);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 28px;
+      animation: pop .5s cubic-bezier(.17,.67,.45,1.3) .3s both;
+    }
+    @keyframes pop {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .success-icon { font-size: 3.5rem; }
+    .success-title {
+      font-family: var(--font-serif); font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 900; color: var(--navy); margin-bottom: 12px;
+      animation: fadeUp .5s .4s both;
+    }
+    .success-sub {
+      color: var(--gray-4); font-size: 1.05rem; margin-bottom: 40px;
+      animation: fadeUp .5s .5s both;
+    }
+    @keyframes fadeUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .order-card {
+      background: var(--sand); border-radius: var(--radius-lg);
+      padding: 32px; text-align: left;
+      margin-bottom: 32px;
+      animation: fadeUp .5s .6s both;
+    }
+    .order-card-title {
+      font-family: var(--font-serif); font-size: 1rem; font-weight: 700;
+      color: var(--navy); margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .order-no {
+      background: var(--navy); color: var(--white);
+      font-size: .78rem; padding: 4px 12px; border-radius: 50px;
+      font-family: monospace;
+    }
+    .order-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,.06);
+    }
+    .order-row:last-child { border-bottom: none; }
+    .order-label { font-size: .85rem; color: var(--gray-4); }
+    .order-val { font-size: .9rem; font-weight: 600; color: var(--text); }
+    .order-total-val { font-family: var(--font-serif); font-size: 1.4rem; color: var(--coral); }
+
+    .success-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; animation: fadeUp .5s .7s both; }
+  </style>
+</head>
+<body>
+<div id="nav-root"></div>
+
+<div class="success-page">
+  <div id="steps-root" style="margin-bottom:40px;"></div>
+
+  <div class="success-icon-wrap">
+    <div class="success-icon">✅</div>
+  </div>
+
+  <h1 class="success-title">預訂成功！出發準備好了嗎？</h1>
+  <p class="success-sub" id="success-sub">確認信已寄送至您的信箱，請記得在出發前查閱。</p>
+
+  <div class="order-card">
+    <div class="order-card-title">
+      訂單詳情
+      <span class="order-no" id="order-no">載入中...</span>
+    </div>
+    <div class="order-row">
+      <span class="order-label">體驗名稱</span>
+      <span class="order-val" id="ord-name">—</span>
+    </div>
+    <div class="order-row">
+      <span class="order-label">目的地</span>
+      <span class="order-val" id="ord-region">—</span>
+    </div>
+    <div class="order-row">
+      <span class="order-label">體驗日期</span>
+      <span class="order-val" id="ord-date">—</span>
+    </div>
+    <div class="order-row">
+      <span class="order-label">場次</span>
+      <span class="order-val" id="ord-session">—</span>
+    </div>
+    <div class="order-row">
+      <span class="order-label">聯絡人</span>
+      <span class="order-val" id="ord-name2">—</span>
+    </div>
+    <div class="order-row">
+      <span class="order-label" style="font-weight:700;">已付總金額</span>
+      <span class="order-val order-total-val" id="ord-total">—</span>
+    </div>
+  </div>
+
+  <div class="success-actions">
+    <a href="index.html" class="btn btn-outline">← 返回首頁</a>
+    <a href="profile.html" class="btn btn-primary">查看我的訂單</a>
+  </div>
+</div>
+
+<div id="footer-root"></div>
+<!-- Confetti library -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<script src="./js/prevent-devtools.js"></script>
+<script src="./js/shared.js"></script>
+<script>
+  document.getElementById('nav-root').innerHTML = renderNavbar('');
+  document.getElementById('footer-root').innerHTML = renderFooter();
+  document.getElementById('steps-root').innerHTML = renderSteps(3);
+  initNavbar();
+  document.getElementById('navbar').classList.remove('transparent');
+  document.getElementById('navbar').classList.add('scrolled');
+
+  const params = new URLSearchParams(location.search);
+  const id = parseInt(params.get('id')) || 1;
+  const exp = EXPERIENCES.find(e => e.id === id) || EXPERIENCES[0];
+  const date = params.get('date') || '—';
+  const session = params.get('session') || '—';
+  const name = params.get('name') || '旅客';
+  const email = params.get('email') || '';
+
+  // Generate random order number
+  const orderNo = 'IT' + Date.now().toString(36).toUpperCase().slice(-8);
+
+  document.getElementById('order-no').textContent = orderNo;
+  document.getElementById('ord-name').textContent = exp.title;
+  document.getElementById('ord-region').textContent = exp.region;
+  document.getElementById('ord-date').textContent = date;
+  document.getElementById('ord-session').textContent = session;
+  document.getElementById('ord-name2').textContent = name;
+  document.getElementById('ord-total').textContent = `NT$ ${exp.price.toLocaleString()}`;
+  if (email) document.getElementById('success-sub').textContent = `確認信已寄送至 ${email}，請記得在出發前查閱。`;
+
+  // Save to localStorage for profile page
+  const orders = JSON.parse(localStorage.getItem('it_orders') || '[]');
+  orders.unshift({ orderNo, expId: id, expName: exp.title, region: exp.region, date, session, name, total: exp.price, status: '未出發', img: exp.img });
+  localStorage.setItem('it_orders', JSON.stringify(orders));
+
+  // Confetti
+  function launchConfetti() {
+    const end = Date.now() + 2500;
+    const colors = ['#E8613C','#4A7C59','#1B2A4A','#F5A623','#fff'];
+    (function frame() {
+      confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors });
+      confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+  }
+  setTimeout(launchConfetti, 400);
+</script>
+</body>
+</html>

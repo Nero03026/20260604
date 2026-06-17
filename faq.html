@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>常見問題 — 島嶼旅跡</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <style>
+    .faq-hero {
+      padding: 140px 5% 60px;
+      background: var(--sand);
+      text-align: center;
+    }
+    .faq-layout {
+      max-width: 800px; margin: 0 auto;
+      padding: 60px 5% 100px;
+    }
+    .faq-tabs {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+    .faq-tab {
+      padding: 10px 24px; border-radius: 50px;
+      border: 2px solid var(--gray-2);
+      font-weight: 700; font-size: .88rem;
+      cursor: pointer; background: var(--white);
+      transition: all var(--transition);
+      color: var(--gray-4);
+    }
+    .faq-tab.active {
+      background: var(--coral); color: var(--white);
+      border-color: var(--coral);
+    }
+    .faq-tab:hover:not(.active) {
+      border-color: var(--coral); color: var(--coral);
+    }
+    .faq-group { display: none; }
+    .faq-group.active { display: block; }
+    .faq-group-title {
+      font-family: var(--font-serif); font-size: 1.1rem; font-weight: 700;
+      color: var(--navy); margin-bottom: 16px;
+      padding-bottom: 12px; border-bottom: 2px solid var(--sand-dark);
+    }
+    .contact-box {
+      background: var(--sand); padding: 40px;
+      border-radius: var(--radius-lg); text-align: center;
+      margin-top: 60px;
+    }
+    .contact-box h3 { font-family: var(--font-serif); font-size: 1.4rem; color: var(--navy); margin-bottom: 10px; }
+    .contact-box p { color: var(--gray-4); margin-bottom: 24px; }
+  </style>
+</head>
+<body>
+<div id="nav-root"></div>
+
+<section class="faq-hero">
+  <div class="section-eyebrow" style="justify-content:center;">FAQ</div>
+  <h1 class="section-title">常見問題解答</h1>
+  <p class="section-sub" style="margin:0 auto;text-align:center;">找不到答案？歡迎直接聯絡我們的客服團隊。</p>
+</section>
+
+<div class="faq-layout">
+  <div class="faq-tabs">
+    <button class="faq-tab active" data-tab="booking">預訂問題</button>
+    <button class="faq-tab" data-tab="refund">退款政策</button>
+    <button class="faq-tab" data-tab="onday">體驗當日</button>
+    <button class="faq-tab" data-tab="account">帳號與付款</button>
+  </div>
+
+  <!-- 預訂問題 -->
+  <div class="faq-group active" id="faq-booking">
+    <div class="faq-group-title">📅 預訂問題</div>
+    <div class="accordion-item">
+      <button class="accordion-btn">如何預訂體驗？<span class="accordion-icon">+</span></button>
+      <div class="accordion-body">在體驗詳情頁選擇日期與人數，點擊「立刻預訂」後，填寫聯絡資料並完成付款即可。完成後系統會自動寄送確認 Email 到您的信箱，請注意查收。</div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-btn">最少需要幾人才能成團？<span class="accordion-icon">+</span></button>
+      <div class="accordion-body">不同體驗的成團人數不同，一般最少 1 人即可報名。部分特殊體驗可能需要最少 2 人，詳細資訊請查看體驗頁面的說明。若人數不足，我們會提前 48 小時通知您。</div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-btn">可以替他人代訂體驗嗎？<span class="accordion-icon">+</span></button>
+      <div class="accordion-body">可以！在填寫旅客資料時，請填入實際參與體驗的旅客資訊（姓名、電話），並在備註欄說明是代訂。確認通知將同時寄送給訂購人。</div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-btn">預訂後可以修改日期嗎？<span class="accordion-icon">+</span></button>
+      <div class="accordion-body">體驗開始前 72 小時內可免費修改日期（視嚮導檔期而定）。請登入個人中心，在「訂單紀錄」中找到對應訂單，點選「修改」即可申請。逾期修改可能需要額外費用。</div>
+    </div>
+  </div>
+
+  <!-- 退款政策 -->
+  <div class="faq-group" id="faq-refund">
+    <div class="faq-group-title">💳 退款政策</div>
+    <div class="accordion-item">
+      <button class="accordion-btn">如何申請退款？<span class="accordion-icon">+</span></button>
+      <div class="accordion-body">登入後至「個人中心 → 訂單紀錄」，點擊「取消訂單」後依照流程操作。退款金額將於 5-7 個工作日退回原付款帳戶。</div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-btn">退款的時間規定是什麼？<span class="accordion-icon">+</span></button>
+      <div class="accordion-body">
+        我們採用彈性退款政策：<br><br>
+        • 體驗前 7 天以上取消：全額退款<br>
+        • 體驗前 3–7 天取消：退款 70%<br>
+        • 體驗前 24–72 小時取消：退款 50%<br>
+        • 體驗前 24 小時內取消：不予退款<br><br>
+        若因嚮導原因取消，無論何時皆全額退款並另補贈優惠券。
+      </div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-btn">遇到天氣不佳或不可抗力因素如何處理？<span class="accordion-icon">+</span></button>
+      <div class="accordion-body">若因惡劣天氣、天然災害等不可抗力因素，嚮導有權取消或延期體驗，旅客可獲得全額退款或免費改期。我們建議您在出發前確認嚮導是否有發出提醒通知。</div>
+    </div>
+  </div>
+
+  <!-- 體驗當日 -->
+  <div class="faq-group" id="faq-onday">
+    <div class="faq-group-title">🎒 體驗當日</div>
+    <div class="accordion-item">
+      <button class="accordion-btn">當天需要帶什麼？<span class="accordion-icon">+</span></button>
+      <div class="accordion-body">每個體驗的建議攜帶物品都列在詳情頁「費用不包含」區塊中，請仔細確認。一般建議攜帶：舒適的服裝、換洗衣物（戶外體驗）、防曬用品、個人水壺，以及預訂確認截圖或 Email。</div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-btn">要如何找到集合地點？<span class="accordion-icon">+</span></button>
+      <div class="accordion-body">預訂確認 Email 中會附有詳細的集合地點說明與 Google Maps 連結。體驗前一天嚮導也會透過系統傳送提醒訊息給您，並附上聯絡方式，若有疑問可直接與嚮導確認。</div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-btn">體驗過程中發生意外怎麼辦？<span class="accordion-icon">+</span></button>
+      <div class="accordion-body">所有體驗均已投保旅遊責任險，每位旅客均有基本保障。嚮導皆接受過急救訓練，並備有基本急救設備。若發生緊急狀況，請立即告知嚮導，或撥打客服專線 0800-123-456。</div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-btn">可以帶小孩或銀髮族參加嗎？<span class="accordion-icon">+</span></button>
+      <div class="accordion-body">各體驗有不同的年齡建議，請查看體驗詳情頁的「適合對象」說明。部分戶外冒險型體驗有年齡下限，而文化、手作、美食類體驗通常全年齡均可參加。如有疑問請預訂前先與嚮導確認。</div>
+    </div>
+  </div>
+
+  <!-- 帳號與付款 -->
+  <div class="faq-group" id="faq-account">
+    <div class="faq-group-title">🔐 帳號與付款</div>
+    <div class="accordion-item">
+      <button class="accordion-btn">支援哪些付款方式？<span class="accordion-icon">+</span></button>
+      <div class="accordion-body">目前支援：VISA / MasterCard 信用卡、LINE Pay、Apple Pay 和 Google Pay。所有付款均透過加密安全連線處理，我們不會儲存您的完整卡號資訊。</div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-btn">如何找回忘記的密碼？<span class="accordion-icon">+</span></button>
+      <div class="accordion-body">在登入頁面點選「忘記密碼」，輸入註冊時使用的 Email，系統將發送密碼重設連結到您的信箱。若未收到請確認垃圾郵件匣，或聯絡客服協助處理。</div>
+    </div>
+  </div>
+
+  <!-- Contact -->
+  <div class="contact-box">
+    <h3>還有其他問題？</h3>
+    <p>我們的客服團隊週一到週五 09:00–18:00 線上為您解答</p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <a href="mailto:hello@islandtrace.tw" class="btn btn-primary">✉ 寄信給我們</a>
+      <a href="#" class="btn btn-outline">💬 即時客服</a>
+    </div>
+  </div>
+</div>
+
+<div id="footer-root"></div>
+<script src="./js/prevent-devtools.js"></script>
+<script src="./js/shared.js"></script>
+<script>
+  document.getElementById('nav-root').innerHTML = renderNavbar('faq.html');
+  document.getElementById('footer-root').innerHTML = renderFooter();
+  initNavbar();
+  document.getElementById('navbar').classList.remove('transparent');
+  document.getElementById('navbar').classList.add('scrolled');
+
+  // Tabs
+  document.querySelectorAll('.faq-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.faq-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.faq-group').forEach(g => g.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('faq-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const body = btn.nextElementSibling;
+      const isOpen = btn.classList.contains('active');
+      // Close all in this group
+      btn.closest('.faq-group').querySelectorAll('.accordion-btn').forEach(b => {
+        b.classList.remove('active');
+        b.nextElementSibling.style.maxHeight = '0';
+        b.nextElementSibling.classList.remove('open');
+      });
+      if (!isOpen) {
+        btn.classList.add('active');
+        body.classList.add('open');
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+</script>
+</body>
+</html>
